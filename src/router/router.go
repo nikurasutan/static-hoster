@@ -5,10 +5,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"nikurasu.gay/static-hoster/api"
+	"nikurasu.gay/static-hoster/envloader"
 	"nikurasu.gay/static-hoster/middleware/auth"
 )
 
-func Create() *gin.Engine {
+func Create(env *envloader.Environment) *gin.Engine {
 	router := gin.Default()
 
 	apiRoutes := router.Group("/api", auth.AuthMiddleware())

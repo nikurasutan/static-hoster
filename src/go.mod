@@ -3,10 +3,13 @@ module nikurasu.gay/static-hoster
 go 1.19
 
 require (
-	github.com/c4milo/unpackit v1.0.0 // indirect
+	github.com/c4milo/unpackit v1.0.0
+	github.com/gin-gonic/gin v1.8.2
+)
+
+require (
 	github.com/dsnet/compress v0.0.1 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
-	github.com/gin-gonic/gin v1.8.2 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/go-playground/validator/v10 v10.11.1 // indirect
