@@ -24,6 +24,6 @@ func PostUpdate(ctx *gin.Context) {
 	}
 	file, err := os.Open("./" + siteUpdate.Filename)
 	unpackit.Unpack(file, "./")
-
+	os.RemoveAll("./" + siteUpdate.Filename)
 	ctx.JSON(http.StatusOK, gin.H{"data": siteUpdate.Filename, "err": err})
 }
