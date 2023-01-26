@@ -6,8 +6,7 @@ import (
 )
 
 func main() {
-	env := envloader.Load()
+	var env = envloader.Load()
 	r := router.Create(env)
-	// Listen and Server in 0.0.0.0:8080
-	r.Run(":8080")
+	r.Run(env.Port)
 }

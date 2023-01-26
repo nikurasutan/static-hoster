@@ -3,25 +3,39 @@ package envloader
 import (
 	"errors"
 	"fmt"
+	"io/fs"
+	"log"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 type Environment struct {
-	rootDir   string
-	staticDir string
-	apiKey    string
+	RootDir   string
+	StaticDir string
+	ApiKey    string
+	Port      string
 }
 
-func Load() *Environment {
-	env := new(Environment)
-	env.rootDir = envReader("STATIC_HOSTER_HOME", fmt.Sprintf("%s/static-hoster", os.Getenv("HOME")))
-	if _, err := os.Stat(fmt.Sprintf("%s/config.yml", env.rootDir)); errors.Is(err, os.ErrNotExist) {
-		env.staticDir = envReader("STATIC_HOSTER_HOSTED_DIR", fmt.Sprintf("%s/static-hoster/hosted", os.Getenv("HOME")))
-		env.apiKey = os.Getenv("STATIC_HOSTER_API_KEY")
-	} else if err == nil {
-		//TODO: Read from config.yml
+func Load() (env *Environment) {
+	err := godotenv.Load(".static-hoster.env")
+	if err != nil {
+		log.Println("Error loading .env file")
+	} else {
+		godotenv.Overload()
 	}
-	return env
+	defaultApiKey := "test123"
+	env = new(Environment)
+	env.RootDir = envReader("STATIC_HOSTER_HOME", fmt.Sprintf("%s/static-hoster/", os.Getenv("HOME")))
+	env.StaticDir = envReader("STATIC_HOSTER_HOST_DIR", fmt.Sprintf("%s/hosted/", env.RootDir))
+	env.Port = fmt.Sprintf(":%s", envReader("STATIC_HOSTER_PORT", "8080"))
+	env.ApiKey = envReader("STATIC_HOSTER_API_KEY", defaultApiKey)
+	if env.ApiKey == defaultApiKey {
+		fmt.Printf("[STATIC-HOSTER-Warning]\t Environment Variable \"STATIC_HOSTER_API_KEY\" not set. Use default key \"%s\". DONT USE THIS FOR PRODUCTION!\n", defaultApiKey)
+	}
+	mkdirIfNotExist(env.RootDir, os.ModePerm)
+	mkdirIfNotExist(env.StaticDir, os.ModePerm)
+	return
 }
 
 func envReader(envVar string, defaultVal string) string {
@@ -29,5 +43,15 @@ func envReader(envVar string, defaultVal string) string {
 		return defaultVal
 	} else {
 		return os.Getenv(envVar)
+	}
+}
+
+func mkdirIfNotExist(dir string, perm fs.FileMode) {
+	if _, err := os.Stat(dir); errors.Is(err, os.ErrNotExist) {
+		fmt.Printf("[STATIC_HOSTER-Info]\tFolder %s does not exit, trying to create it\n", dir)
+		err := os.Mkdir(dir, perm)
+		if err != nil {
+			log.Println(err)
+		}
 	}
 }

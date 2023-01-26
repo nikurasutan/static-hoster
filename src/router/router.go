@@ -12,16 +12,18 @@ import (
 func Create(env *envloader.Environment) *gin.Engine {
 	router := gin.Default()
 
-	apiRoutes := router.Group("/api", auth.AuthMiddleware())
+	apiRoutes := router.Group("/api", auth.AuthMiddleware(env))
 	{
-		apiRoutes.POST("/update", api.PostUpdate)
+		apiRoutes.POST("/update", api.PostUpdate(env))
 	}
 	// Ping test
 	router.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
 	})
 
-	router.Static("/home", "./hostdir")
+	router.Static("/home", env.StaticDir)
+
+	// TODO: Load 404 error Page
 
 	return router
 }

@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/c4milo/unpackit v1.0.0
 	github.com/gin-gonic/gin v1.8.2
+	github.com/joho/godotenv v1.4.0
 )
 
 require (
@@ -32,4 +33,5 @@ require (
 	golang.org/x/text v0.6.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
