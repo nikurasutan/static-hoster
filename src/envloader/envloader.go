@@ -15,6 +15,7 @@ type Environment struct {
 	StaticDir string
 	ApiKey    string
 	Port      string
+	BaseRoute string
 }
 
 func Load() (env *Environment) {
@@ -30,6 +31,7 @@ func Load() (env *Environment) {
 	env.StaticDir = envReader("STATIC_HOSTER_HOST_DIR", fmt.Sprintf("%s/hosted/", env.RootDir))
 	env.Port = fmt.Sprintf(":%s", envReader("STATIC_HOSTER_PORT", "8080"))
 	env.ApiKey = envReader("STATIC_HOSTER_API_KEY", defaultApiKey)
+	env.BaseRoute = envReader("STATIC_HOSTER_BASE_ROUTE", "/home")
 	if env.ApiKey == defaultApiKey {
 		fmt.Printf("[STATIC-HOSTER-Warning]\t Environment Variable \"STATIC_HOSTER_API_KEY\" not set. Use default key \"%s\". DONT USE THIS FOR PRODUCTION!\n", defaultApiKey)
 	}

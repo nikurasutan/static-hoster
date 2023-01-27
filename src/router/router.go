@@ -22,7 +22,10 @@ func Create(env *envloader.Environment) *gin.Engine {
 		c.String(http.StatusOK, "pong")
 	})
 
-	router.Static("/home", env.StaticDir)
+	router.Static(env.BaseRoute, env.StaticDir)
+	router.GET("/", func(ctx *gin.Context) {
+		ctx.Redirect(http.StatusPermanentRedirect, env.BaseRoute)
+	})
 
 	router.LoadHTMLGlob(fmt.Sprintf("%s404.html", env.StaticDir))
 	router.NoRoute(func(ctx *gin.Context) {
