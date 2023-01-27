@@ -28,7 +28,7 @@ func Load() (env *Environment) {
 	defaultApiKey := "test123"
 	env = new(Environment)
 	env.RootDir = envReader("STATIC_HOSTER_HOME", fmt.Sprintf("%s/static-hoster/", os.Getenv("HOME")))
-	env.StaticDir = envReader("STATIC_HOSTER_HOST_DIR", fmt.Sprintf("%s/hosted/", env.RootDir))
+	env.StaticDir = envReader("STATIC_HOSTER_HOST_DIR", fmt.Sprintf("%shosted/", env.RootDir))
 	env.Port = fmt.Sprintf(":%s", envReader("STATIC_HOSTER_PORT", "8080"))
 	env.ApiKey = envReader("STATIC_HOSTER_API_KEY", defaultApiKey)
 	env.BaseRoute = envReader("STATIC_HOSTER_BASE_ROUTE", "/home")
