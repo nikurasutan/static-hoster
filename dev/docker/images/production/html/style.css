@@ -51,6 +51,25 @@ body {
     width: 6rem;
 }
 
+.subtext {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+}
+
+#siteURL:hover {
+    text-decoration: underline;
+}
+
+#siteURL {
+    background-color: #222222;
+    padding: .5rem;
+    margin: .5rem;
+    border-radius: 5px;
+    color: #a1a1a1;
+}
+
 #gopherImg {
     max-height: 60%;
 }
