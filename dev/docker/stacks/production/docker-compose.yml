@@ -1,0 +1,16 @@
+version: '3'
+services:
+  static-hoster:
+    images: dev.cat-enby.club/nikurasu/static-hoster:latest
+    environment:
+      - STATIC_HOSTER_API_KEY=e621
+      # OPTIONAL
+      - STATIC_HOSTER_HOME=/home/dave/st/
+      - STATIC_HOSTER_HOST_DIR=/home/dave/host-this-dir/
+      - STATIC_HOSTER_BASE_ROUTE=/site
+    volumes:
+      - hosted_dir:/home/dave/host-this-dir/
+    ports:
+      - 4200:4200
+volumes:
+  hosted_dir:
