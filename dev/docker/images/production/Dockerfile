@@ -8,5 +8,4 @@ RUN go build -o /build/static-hoster
 
 FROM alpine:3.17 AS final
 COPY --from=build /build/static-hoster /bin/static-hoster
-COPY /dev/docker/images/production/html /usr/share/static-hoster/html
 CMD static-hoster
