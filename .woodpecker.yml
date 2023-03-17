@@ -1,0 +1,13 @@
+workspace:
+  path: static-hoster
+  base: /build
+
+pipeline:
+  build:
+    image: docker:23-cli
+    commands:
+      - docker build -t dev.cat-enby.club/nikurasu/static-hoster:latest -t dev.cat-enby.club/nikurasu/static-hoster:v$CI_COMMIT_TAG -f dev/docker/images/production/Dockerfile
+    when:
+      event: tag
+
+branches: main
