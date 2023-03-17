@@ -5,6 +5,7 @@ workspace:
 pipeline:
   build:
     image: docker:23-cli
+    privileged: true
     commands:
       - docker buildx build -t dev.cat-enby.club/nikurasu/static-hoster:latest -t dev.cat-enby.club/nikurasu/static-hoster:v$CI_COMMIT_TAG -f dev/docker/images/production/Dockerfile .
 
