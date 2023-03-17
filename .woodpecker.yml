@@ -2,6 +2,7 @@ workspace:
   path: static-hoster
   base: /build
 
+
 pipeline:
   build:
     image: docker:23-cli
