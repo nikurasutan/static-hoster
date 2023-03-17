@@ -20,7 +20,6 @@ func main() {
 		copyEmbed(env.StaticDir)
 		fmt.Println("Created default files")
 	}
-	copyEmbed(env.StaticDir)
 	r := router.Create(env)
 	r.Run(env.Port)
 }
