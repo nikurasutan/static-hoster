@@ -21,7 +21,7 @@ func main() {
 		fmt.Println("Created default files")
 	}
 	r := router.Create(env)
-	r.Run(env.Port)
+	r.Listen(env.Port)
 }
 
 func copyEmbed(dest string) {

@@ -13,6 +13,7 @@ import (
 type Environment struct {
 	RootDir   string
 	StaticDir string
+	User      string
 	ApiKey    string
 	Port      string
 	BaseRoute string
@@ -30,6 +31,7 @@ func Load() (env *Environment) {
 	env.RootDir = envReader("STATIC_HOSTER_HOME", fmt.Sprintf("%s/static-hoster/", os.Getenv("HOME")))
 	env.StaticDir = envReader("STATIC_HOSTER_HOST_DIR", fmt.Sprintf("%shosted/", env.RootDir))
 	env.Port = fmt.Sprintf(":%s", envReader("STATIC_HOSTER_PORT", "8080"))
+	env.User = envReader("STATIC_HOSTER_USER", "user")
 	env.ApiKey = envReader("STATIC_HOSTER_API_KEY", defaultApiKey)
 	env.BaseRoute = envReader("STATIC_HOSTER_BASE_ROUTE", "/home")
 	if env.ApiKey == defaultApiKey {
