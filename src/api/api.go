@@ -6,31 +6,35 @@ import (
 	"os"
 
 	"github.com/c4milo/unpackit"
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 	"nikurasu.gay/static-hoster/envloader"
 )
 
-func PostUpdate(env *envloader.Environment) gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		fmt.Println(env.ApiKey)
+type retrunVal struct {
+	Data string `json:"data"`
+	Err  error  `json:"err"`
+}
+
+func PostUpdate(env *envloader.Environment) func(*fiber.Ctx) error {
+	return func(ctx *fiber.Ctx) error {
 		siteUpdate, err := ctx.FormFile("STATIC_PAGE")
 		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-				"message": "File not recieved",
-			})
-			return
+			ctx.Status(http.StatusBadRequest)
+			return ctx.SendString("File not recieved")
 		}
-		if err := ctx.SaveUploadedFile(siteUpdate, fmt.Sprintf("%s%s", env.RootDir, siteUpdate.Filename)); err != nil {
-			ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-				"message": "Unable to save file",
-			})
-			return
+		if err := ctx.SaveFile(siteUpdate, fmt.Sprintf("%s%s", env.RootDir, siteUpdate.Filename)); err != nil {
+			ctx.Status(http.StatusBadRequest)
+			return ctx.SendString("Unable to save file")
 		}
 		file, err := os.Open(fmt.Sprintf("%s%s", env.RootDir, siteUpdate.Filename))
 		os.RemoveAll(env.StaticDir)
 		os.Mkdir(env.StaticDir, os.ModePerm)
 		unpackit.Unpack(file, env.StaticDir)
 		os.RemoveAll(fmt.Sprintf("%s%s", env.RootDir, siteUpdate.Filename))
-		ctx.JSON(http.StatusOK, gin.H{"data": siteUpdate.Filename, "err": err})
+		retrunArray := new(retrunVal)
+		retrunArray.Data = siteUpdate.Filename
+		retrunArray.Err = err
+		ctx.JSON(retrunArray)
+		return ctx.SendStatus(http.StatusOK)
 	}
 }

@@ -4,32 +4,32 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/basicauth"
 	"nikurasu.gay/static-hoster/api"
 	"nikurasu.gay/static-hoster/envloader"
-	"nikurasu.gay/static-hoster/middleware/auth"
 )
 
-func Create(env *envloader.Environment) *gin.Engine {
-	router := gin.Default()
+func Create(env *envloader.Environment) *fiber.App {
+	router := fiber.New()
 
-	apiRoutes := router.Group("/api", auth.AuthMiddleware(env))
-	{
-		apiRoutes.POST("/update", api.PostUpdate(env))
-	}
+	router.Static("", env.StaticDir)
+
+	apiRoutes := router.Group("/api", basicauth.New(basicauth.Config{
+		Users: map[string]string{
+			env.User: env.ApiKey,
+		},
+	}))
+	apiRoutes.Post("/update", api.PostUpdate(env))
 	// Ping test
-	router.GET("/ping", func(c *gin.Context) {
-		c.String(http.StatusOK, "pong")
+	router.Get("/ping", func(c *fiber.Ctx) error {
+		c.Status(http.StatusOK)
+		return c.SendString("Pong!")
 	})
 
-	router.Static(env.BaseRoute, env.StaticDir)
-	router.GET("/", func(ctx *gin.Context) {
-		ctx.Redirect(http.StatusPermanentRedirect, env.BaseRoute)
-	})
-
-	router.LoadHTMLGlob(fmt.Sprintf("%s404.html", env.StaticDir))
-	router.NoRoute(func(ctx *gin.Context) {
-		ctx.HTML(http.StatusNotFound, "404.html", gin.H{})
+	// Use the "old" method becuase I don't know how to pass the error code to the user generated html
+	router.Use(func(ctx *fiber.Ctx) error {
+		return ctx.Status(http.StatusNotFound).SendFile(fmt.Sprintf("%s404.html", env.StaticDir))
 	})
 
 	return router
